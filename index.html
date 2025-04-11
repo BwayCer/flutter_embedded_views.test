@@ -1,38 +1,63 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <!--
-    If you are serving your web app in a path other than the root, change the
-    href value below to reflect the base path you are serving from.
+  <head>
+    <base href="/flutter_embedded_views.test/">
+    <meta charset="UTF-8" />
+    <title>Flutter MultiView Demo</title>
+    <script src="./flutter.js"></script>
+    <style>
+      .flutter-info {
+        margin: 20px;
+      }
+      .flutter-container {
+        width: 600px;
+        height: 300px;
+        margin: 20px;
+        border: 2px dashed #888;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="flutter-info">
+      <a href="./origin.html">回到單一畫面頁面</a>
+    </div>
 
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
+    <div id="flutter_view_1" class="flutter-container"></div>
+    <div id="flutter_view_2" class="flutter-container"></div>
 
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
+    <script>
+      window.addEventListener("load", function () {
+        _flutter.loader.loadEntrypoint({
+          onEntrypointLoaded: async function (engineInitializer) {
+            const engine = await engineInitializer.initializeEngine({
+              multiViewEnabled: true,
+            });
+            const appRunner = await engine.runApp();
 
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
-  -->
-  <base href="/flutter_embedded_views.test/">
+            await appRunner.addView({
+              hostElement: document.getElementById("flutter_view_1"),
+              initialData: {
+                greeting: "👋 Hello from View 1",
+              },
+              viewConstraints: {
+                maxWidth: 600,
+                maxHeight: 300,
+              }
+            });
 
-  <meta charset="UTF-8">
-  <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
-
-  <!-- iOS meta tags & icons -->
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="embedded_view">
-  <link rel="apple-touch-icon" href="icons/Icon-192.png">
-
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="favicon.png"/>
-
-  <title>embedded_view</title>
-  <link rel="manifest" href="manifest.json">
-</head>
-<body>
-  <script src="flutter_bootstrap.js" async></script>
-</body>
+            await appRunner.addView({
+              hostElement: document.getElementById("flutter_view_2"),
+              initialData: {
+                greeting: "🌟 Welcome from View 2",
+              },
+              viewConstraints: {
+                maxWidth: 600,
+                maxHeight: 300,
+              }
+            });
+          }
+        });
+      });
+    </script>
+  </body>
 </html>
